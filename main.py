@@ -25,12 +25,15 @@ form = """
                 width: 540px;
                 height: 120px;
             }}
+            .error{{
+                color: red;
+            }}
         </style>
     </head>
     <body>
         <form method="POST">
                 <label for="rot">Rotate By: </label>
-                <input name="rot" type="text" value="{0}" />
+                <input name="rot" type="text" value="{0}" /><div class="error">{2}</div>
                 <textarea name="text" placeholder="Enter your text here...">{1}</textarea>
                 <input type="submit" />
         </form>
@@ -43,10 +46,13 @@ form = """
 def encrypt():
     text = request.form["text"]
     rot = request.form["rot"]
-    return form.format(rot,rotate_string(text, int(rot))) 
+    if not rot:
+        error = "Please enter a valid rotation value!"
+        return form.format(0,"",error) 
+    return form.format(rot,rotate_string(text, int(rot)),"") 
 
 @app.route("/")
 def index():
-    return form.format(0,"")
+    return form.format(0,"","")
 
 app.run()
